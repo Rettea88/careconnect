@@ -48,7 +48,8 @@ button {
   margin: 0 auto;
   padding: 18px 18px 34px;
   background: #fffaf3;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .phone-shell[data-state="fall"] {

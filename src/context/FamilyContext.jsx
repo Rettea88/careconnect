@@ -1,0 +1,61 @@
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { auth, db } from '../services/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
+import { doc, onSnapshot, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+
+const FamilyContext = createContext();
+
+const defaultFamilyState = {
+  user: { userName: "Sarah Chen", userInitials: "SC" },
+  elderly: { elderlyName: "Mom", room: "Living Room" },
+  safety: { safetyStatus: "Safe", safetyMessage: "All systems normal", cameraStatus: "Camera Online", battery: 98 },
+  activity: { walkingStatus: "Walking", walkingDetail: "2 min ago · steady pace" },
+  alerts: { unreadAlerts: 2 }
+};
+
+export function FamilyProvider({ children }) {
+  const [familyState, setFamilyState] = useState(defaultFamilyState);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
+      setCurrentUser(user);
+      if (user) {
+        const familyStateRef = doc(db, "familyStates", user.uid);
+        const docSnap = await getDoc(familyStateRef);
+        
+        if (!docSnap.exists()) {
+          await setDoc(familyStateRef, {
+            ...defaultFamilyState,
+            ownerUid: user.uid,
+            updatedAt: serverTimestamp()
+          });
+        }
+
+        const unsubscribeDoc = onSnapshot(familyStateRef, (docSnapshot) => {
+          if (docSnapshot.exists()) {
+            setFamilyState({ ...defaultFamilyState, ...docSnapshot.data() });
+          }
+        });
+
+        setLoading(false);
+        return () => unsubscribeDoc();
+      } else {
+        setFamilyState(defaultFamilyState);
+        setLoading(false);
+      }
+    });
+    return () => unsubscribeAuth();
+  }, []);
+
+  const value = { ...familyState, currentUser, loading };
+
+  return (
+    <FamilyContext.Provider value={value}>
+      {!loading && children}
+    </FamilyContext.Provider>
+  );
+}
+
+export const useFamilyData = () => useContext(FamilyContext);
