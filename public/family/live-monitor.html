@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareConnect - Live Monitor</title>
+  <link rel="stylesheet" href="../css/live-monitor.css">
+  <script type="module" src="../js/live-monitor.js"></script>
+</head>
+<body>
+  <main class="phone-shell" data-state="normal">
+    <header class="app-header">
+      <button class="back-button" type="button" aria-label="Go back">
+        <span aria-hidden="true">←</span>
+      </button>
+
+      <div class="header-title">
+        <h1>Live Monitor</h1>
+        <div class="live-status">
+          <span class="status-dot" aria-hidden="true"></span>
+          Live
+        </div>
+      </div>
+
+      <div class="header-spacer" aria-hidden="true"></div>
+    </header>
+
+    <section class="monitor" aria-label="Live camera monitoring screen">
+      <video class="monitor-video" autoplay loop muted playsinline>
+        <source src="../assets/videos/elder-room-monitor.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+
+      <div class="recording-overlay">
+        <span class="rec-label"><span class="rec-dot"></span>REC</span>
+        <time id="live-clock" datetime="">--:--:--</time>
+      </div>
+
+      <div class="ai-box" aria-hidden="true"></div>
+
+      <div class="ai-result">
+        <span class="ai-result-icon" id="ai-result-icon" aria-hidden="true">✓</span>
+        <div>
+          <strong id="ai-detection-title">Person Detected</strong>
+          <span id="ai-status">Normal</span>
+        </div>
+        <small id="ai-confidence">Confidence 98%</small>
+      </div>
+    </section>
+
+    <section class="detection-section" aria-labelledby="detection-title">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">Smart monitoring</span>
+          <h2 id="detection-title">AI Detection</h2>
+        </div>
+        <span class="safe-badge" id="status-indicator">
+          <span></span>
+          <span id="status-indicator-text">All clear</span>
+        </span>
+      </div>
+
+      <p class="monitoring-message" id="monitoring-message" aria-live="polite">
+        All systems normal
+      </p>
+
+      <div class="detection-chips">
+        <div class="detection-chip">
+          <span class="chip-icon motion-icon" aria-hidden="true"></span>
+          <span><strong>No Motion</strong><small>Not detected</small></span>
+        </div>
+        <div class="detection-chip">
+          <span class="chip-icon clock-icon" aria-hidden="true"></span>
+          <span><strong>Inactive Over 1h</strong><small>Not detected</small></span>
+        </div>
+        <div class="detection-chip">
+          <span class="chip-icon gesture-icon" aria-hidden="true">⌁</span>
+          <span><strong>Pain Gesture</strong><small>Not detected</small></span>
+        </div>
+        <div class="detection-chip">
+          <span class="chip-icon hand-icon" aria-hidden="true">✋</span>
+          <span><strong>Hand-Wave SOS</strong><small>Not detected</small></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="prototype-controls" aria-labelledby="prototype-controls-title">
+      <div>
+        <span class="eyebrow">Local demo</span>
+        <h2 id="prototype-controls-title">Prototype Controls</h2>
+      </div>
+      <div class="control-buttons">
+        <button class="state-button is-active" type="button" data-simulation="normal" aria-pressed="true">
+          Simulate Normal
+        </button>
+        <button class="state-button" type="button" data-simulation="fall" aria-pressed="false">
+          Simulate Fall
+        </button>
+        <button class="state-button" type="button" data-simulation="no-movement" aria-pressed="false">
+          Simulate No Movement
+        </button>
+      </div>
+    </section>
+
+    <section class="talk-card" aria-labelledby="talk-title">
+      <div class="talk-card-header">
+        <div class="camera-icon" aria-hidden="true">
+          <span></span>
+        </div>
+        <div>
+          <span class="eyebrow">Two-way audio</span>
+          <h2 id="talk-title">Talk to Camera</h2>
+        </div>
+        <button class="talk-button" type="button">Talk</button>
+      </div>
+
+      <div class="message-preview">
+        <p class="message outgoing">Mom, did you take your medicine?</p>
+        <p class="message incoming">Yes dear, just had it.</p>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
