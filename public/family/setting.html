@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareConnect | Settings</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    /* 特定于 Settings 页面的局部样式 */
+    .settings-content {
+      height: 100%;
+      max-height: 92vh;
+      padding: 58px 22px 116px;
+      overflow-y: auto;
+    }
+    
+    .settings-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .settings-header h1 {
+      font-size: 20px;
+      margin: 0;
+    }
+    
+    /* 顶部圆形图标按钮 (返回、退出) */
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(24, 37, 54, 0.1);
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+      font-size: 18px;
+    }
+    .icon-button.logout {
+      color: var(--coral);
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 24px 4px 12px;
+    }
+    .section-title {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--muted);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    
+    /* 红色添加按钮 */
+    .add-btn {
+      background: var(--coral);
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(255, 95, 109, 0.3);
+    }
+    
+    /* 绑定状态徽章 */
+    .bound-badge {
+      background: #E6F4F1;
+      color: var(--sage-dark);
+      padding: 5px 10px;
+      border-radius: 12px;
+      font-size: 10px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    
+    /* 圆角白色卡片 */
+    .list-card {
+      background: var(--card);
+      border-radius: 24px;
+      padding: 8px 16px;
+      box-shadow: var(--soft-shadow);
+      margin-bottom: 16px;
+    }
+    
+    /* 列表项目 */
+    .list-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(138, 150, 163, 0.15);
+    }
+    .list-item:last-child {
+      border-bottom: none;
+    }
+    
+    /* 头像 */
+    .item-avatar {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: white;
+      margin-right: 14px;
+      font-size: 15px;
+    }
+    .avatar-red { background: #FF6B6B; }
+    .avatar-teal { background: #2db7a3; }
+    .avatar-yellow { background: #f5b52e; }
+    .avatar-hospital { background: #e84d5a; }
+    
+    /* 列表文本 */
+    .item-info {
+      flex: 1;
+    }
+    .item-info h3 {
+      margin: 0 0 4px 0;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .item-info p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
+    
+    /* 箭头 */
+    .item-arrow {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #f0f3f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+    
+    .primary-star {
+      color: var(--coral);
+      font-size: 14px;
+    }
+    
+    /* 权限区域 */
+    .permission-header {
+      font-size: 12px;
+      color: var(--muted);
+      padding: 8px 0 14px;
+      border-bottom: 1px solid rgba(138, 150, 163, 0.15);
+      margin-bottom: 14px;
+    }
+    .permission-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+    .permission-item:last-child {
+      margin-bottom: 8px;
+    }
+    .permission-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(45, 183, 163, 0.15);
+      color: var(--sage);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 14px;
+    }
+    .permission-info {
+      flex: 1;
+      padding-right: 10px;
+    }
+    .permission-info h3 {
+      margin: 0 0 4px 0;
+      font-size: 15px;
+    }
+    .permission-info p {
+      margin: 0;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+    
+    /* iOS 风格的 Toggle Switch */
+    .toggle-switch {
+      position: relative;
+      width: 46px;
+      height: 26px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #d1d9e0;
+      transition: .3s;
+      border-radius: 26px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      transition: .3s;
+      border-radius: 50%;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    input:checked + .slider {
+      background-color: var(--sage);
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+  </style>
+</head>
+<body>
+  <main class="app-shell">
+    <section class="phone home-screen">
+      
+      <div class="phone-status" aria-hidden="true">
+        <span>9:41</span>
+        <div class="status-icons">
+          <i></i>
+          <i></i>
+          <b></b>
+        </div>
+      </div>
+
+      <div class="settings-content">
+        <header class="settings-header">
+          <button class="icon-button" aria-label="Go back" onclick="window.location.href='home.html'">
+            <span aria-hidden="true">←</span>
+          </button>
+          
+          <h1>Settings</h1>
+          
+          <button class="icon-button logout" id="logoutButton" aria-label="Sign out">
+            <span aria-hidden="true">🚪</span>
+          </button>
+        </header>
+
+        <div class="section-header">
+          <span class="section-title">Emergency Contacts</span>
+          <div class="add-btn" aria-label="Add contact">+</div>
+        </div>
+        
+        <div class="list-card">
+          <div class="list-item">
+            <div class="item-avatar avatar-red">DC</div>
+            <div class="item-info">
+              <h3>David Chen <span class="primary-star" aria-hidden="true">★</span></h3>
+              <p>Son · Primary</p>
+            </div>
+            <div class="item-arrow">›</div>
+          </div>
+          
+          <div class="list-item">
+            <div class="item-avatar avatar-teal">LC</div>
+            <div class="item-info">
+              <h3>Lily Chen</h3>
+              <p>Daughter</p>
+            </div>
+            <div class="item-arrow">›</div>
+          </div>
+          
+          <div class="list-item">
+            <div class="item-avatar avatar-yellow">
+              <span aria-hidden="true">🏢</span>
+            </div>
+            <div class="item-info">
+              <h3>Sunshine Center</h3>
+              <p>Community</p>
+            </div>
+            <div class="item-arrow">›</div>
+          </div>
+          
+          <div class="list-item">
+            <div class="item-avatar avatar-hospital">
+              <span aria-hidden="true">🏥</span>
+            </div>
+            <div class="item-info">
+              <h3>St. Mary Hospital</h3>
+              <p>24/7 Emergency</p>
+            </div>
+            <div class="item-arrow">›</div>
+          </div>
+        </div>
+
+        <div class="section-header">
+          <span class="section-title">Community Staff Permissions</span>
+          <div class="bound-badge">
+            <span aria-hidden="true">🛡️</span> BOUND
+          </div>
+        </div>
+
+        <div class="list-card">
+          <div class="permission-header">
+            Sunshine Community · Admin Lin Wei
+          </div>
+          
+          <div class="permission-item">
+            <div class="permission-icon">
+              <span aria-hidden="true">📹</span>
+            </div>
+            <div class="permission-info">
+              <h3>Live Camera Access</h3>
+              <p>Allow staff to view the live feed anytime</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox">
+              <span class="slider"></span>
+            </label>
+          </div>
+          
+          <div class="permission-item">
+            <div class="permission-icon">
+              <span aria-hidden="true">⚠️</span>
+            </div>
+            <div class="permission-info">
+              <h3>Alert-Triggered Access</h3>
+              <p>Allow staff to view feed only during alerts</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <nav class="bottom-nav" aria-label="Family app navigation">
+        <a href="home.html">
+          <span aria-hidden="true">⌂</span>
+          Home
+        </a>
+        <a href="live-monitor.html">
+          <span aria-hidden="true">▶</span>
+          Live
+        </a>
+        <a href="alert.html">
+          <span aria-hidden="true">!</span>
+          Alerts
+        </a>
+        <a class="active" href="settings.html" aria-current="page">
+          <span aria-hidden="true">◉</span>
+          Me
+        </a>
+      </nav>
+
+      <div class="toast" id="appToast" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script src="../js/data.js"></script>
+  <script src="../js/family.js"></script>
+  <script type="module" src="../js/auth.js"></script>
+</body>
+</html>
