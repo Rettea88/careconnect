@@ -235,21 +235,12 @@ button {
   height: 735px;
   min-height: 735px;
   max-height: none;
-  border: 13px solid #1e1f20;
-  border-radius: 54px;
+  border-radius: 36px;
   background:
     radial-gradient(circle at 50% 88%, rgba(45, 183, 163, 0.1), transparent 34%),
     radial-gradient(circle at 55% 42%, rgba(255, 95, 109, 0.12), transparent 36%),
     linear-gradient(160deg, #fff8f0, #fffdf9);
   box-shadow: 0 26px 70px rgba(24, 37, 54, 0.22);
-}
-
-.login-phone::before {
-  top: 17px;
-  width: 126px;
-  height: 34px;
-  border-radius: 999px;
-  background: #101113;
 }
 
 .phone-status {
