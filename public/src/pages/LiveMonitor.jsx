@@ -23,7 +23,6 @@ export default function LiveMonitor() {
   };
 
   return (
-    // 👇 注意这里：增加了 home-content 类名，并用 style 重置了高度和宽度限制 👇
     <div 
       className="phone-shell home-content" 
       data-state={activeSimulation}

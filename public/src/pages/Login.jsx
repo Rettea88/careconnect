@@ -3,31 +3,25 @@ import { useNavigate, Navigate } from 'react-router-dom';
 import { toastEvent } from '../components/Toast';
 import { useFamilyData } from '../context/FamilyContext';
 
-// 引入 Firebase 核心验证和数据库方法
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../services/firebase';
 
 export default function Login() {
   const navigate = useNavigate();
-  // 检查是否已经登录，如果已登录直接跳转到主页，防止重复登录
   const { currentUser } = useFamilyData() || {};
   
-  // UI 状态
   const [isSignUp, setIsSignUp] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  // 表单输入状态 (受控组件)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
 
-  // 如果用户已经登录，直接跳走
   if (currentUser) {
     return <Navigate to="/home" replace />;
   }
 
-  // 错误信息翻译（完美复刻你原本 auth.js 里的友好提示）
   const getFriendlyError = (error) => {
     const code = error.code;
     if (code === "auth/email-already-in-use") return "This email is already registered. Please sign in instead.";
@@ -38,7 +32,6 @@ export default function Login() {
     return "Something went wrong. Please try again.";
   };
 
-  // 🔴 处理登录 (Sign In)
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     if (!email || !password) {
@@ -58,7 +51,6 @@ export default function Login() {
     }
   };
 
-  // 🟢 处理注册 (Sign Up)
   const handleSignupSubmit = async (e) => {
     e.preventDefault();
     if (!fullName || !email || !password) {
@@ -72,16 +64,12 @@ export default function Login() {
 
     setIsLoading(true);
     try {
-      // 1. 在 Firebase Auth 中创建用户
       const cred = await createUserWithEmailAndPassword(auth, email, password);
 
-      // 2. 更新用户的显示名称
       await updateProfile(cred.user, { displayName: fullName });
 
-      // 3. 提取名字首字母缩写 (例如 "Sarah Chen" -> "SC")
       const initials = fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'CC';
 
-      // 4. 在 Firestore 中初始化该家庭的默认状态（复刻你原本的 data.js 逻辑）
       const familyStateRef = doc(db, "familyStates", cred.user.uid);
       await setDoc(familyStateRef, {
         user: { userName: fullName, userInitials: initials },
@@ -131,7 +119,6 @@ export default function Login() {
       </div>
 
       {!isSignUp ? (
-        // --- 登录表单 ---
         <form className="login-form" onSubmit={handleLoginSubmit}>
           <label className="input-pill" htmlFor="email">
             <span className="input-icon">✉</span>
@@ -164,7 +151,6 @@ export default function Login() {
           </div>
         </form>
       ) : (
-        // --- 注册表单 ---
         <form className="login-form auth-extra-fields" onSubmit={handleSignupSubmit}>
           <label className="input-pill" htmlFor="fullName">
             <span className="input-icon">👤</span>

@@ -2,7 +2,6 @@ import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// 从你原有的 firebase-config.js 迁移过来的配置
 const firebaseConfig = {
   apiKey: "AIzaSyBk_JGX8UeVsRehunweNRtqyrgQLJ_BKhU",
   authDomain: "careconnect-ashin.firebaseapp.com",

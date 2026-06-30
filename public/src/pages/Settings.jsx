@@ -2,16 +2,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toastEvent } from '../components/Toast';
 
-// 引入 Firebase 登出逻辑
 import { signOut } from 'firebase/auth';
 import { auth } from '../services/firebase';
 
-import '../styles/settings.css'; // 引入专属样式
+import '../styles/settings.css';
 
 export default function Settings() {
   const navigate = useNavigate();
 
-  // 真正的 Firebase 退出登录逻辑
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -117,7 +115,6 @@ export default function Settings() {
             <p>Allow staff to view feed only during alerts</p>
           </div>
           <label className="toggle-switch">
-            {/* React 中的 checked 属性写法 */}
             <input type="checkbox" defaultChecked />
             <span className="slider"></span>
           </label>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../styles/alert.css'; // 引入专属样式
+import '../styles/alert.css';
 
 export default function Alert() {
   const navigate = useNavigate();
@@ -8,8 +8,6 @@ export default function Alert() {
   return (
     <div className="alert-wrapper">
       <div className="alert-phone">
-        
-        {/* 红色警报头部 */}
         <div className="alert-header">
           <div className="alert-top-nav">
             <div className="alert-badge">
@@ -30,7 +28,6 @@ export default function Alert() {
           </div>
         </div>
 
-        {/* 内容区域 */}
         <div className="content-area">
           <div className="card">
             <div className="info-row">
@@ -57,9 +54,8 @@ export default function Alert() {
             <p>Sunshine Community staff can now access the live camera to verify Mom's condition.</p>
           </div>
 
-          <div class="instruction-card">
+          <div className="instruction-card">
             <div className="card-header">
-              {/* 注意：在 React 中 stroke-width 必须写成驼峰命名 strokeWidth */}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
               ACTION REQUIRED
             </div>
@@ -67,14 +63,13 @@ export default function Alert() {
           </div>
         </div>
 
-        {/* 底部操作按钮 */}
         <div className="action-footer">
           <div className="action-grid">
             <button className="btn-action btn-community" onClick={() => window.location.href='tel:+1234567890'}>
               <svg viewBox="0 0 24 24"><path d="M3 18v-6a9 9 0 0 1 18 0v6"/><path d="M21 19a2 2 0 0 1-2 2h-1v-4h3v2z"/><path d="M3 19a2 2 0 0 0 2 2h1v-4H3v2z"/></svg>
               <span>Contact<br/>Community</span>
             </button>
-            <button className="btn-action btn-hospital">
+            <button className="btn-action btn-hospital" onClick={() => window.location.href='tel:+1234567890'}>
               <svg viewBox="0 0 24 24"><path d="M12 2v20M2 12h20" stroke="currentColor" strokeWidth="3" strokeLinecap="round"/></svg>
               <span>Call<br/>Hospital</span>
             </button>

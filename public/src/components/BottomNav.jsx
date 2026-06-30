@@ -4,8 +4,6 @@ import { NavLink } from 'react-router-dom';
 export default function BottomNav() {
   return (
     <nav className="bottom-nav" aria-label="Family app navigation">
-      
-      {/* NavLink 接收一个回调，自动判断 isActive 并应用类名 */}
       <NavLink 
         to="/home" 
         className={({ isActive }) => (isActive ? 'active' : '')}

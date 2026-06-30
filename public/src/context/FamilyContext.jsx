@@ -19,34 +19,60 @@ export function FamilyProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let unsubscribeDoc = null;
+
     const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
+      if (unsubscribeDoc) {
+        unsubscribeDoc();
+        unsubscribeDoc = null;
+      }
+
       setCurrentUser(user);
+
       if (user) {
-        const familyStateRef = doc(db, "familyStates", user.uid);
-        const docSnap = await getDoc(familyStateRef);
-        
-        if (!docSnap.exists()) {
-          await setDoc(familyStateRef, {
-            ...defaultFamilyState,
-            ownerUid: user.uid,
-            updatedAt: serverTimestamp()
-          });
-        }
+        try {
+          const familyStateRef = doc(db, "familyStates", user.uid);
+          const docSnap = await getDoc(familyStateRef);
 
-        const unsubscribeDoc = onSnapshot(familyStateRef, (docSnapshot) => {
-          if (docSnapshot.exists()) {
-            setFamilyState({ ...defaultFamilyState, ...docSnapshot.data() });
+          if (!docSnap.exists()) {
+            await setDoc(familyStateRef, {
+              ...defaultFamilyState,
+              ownerUid: user.uid,
+              updatedAt: serverTimestamp()
+            });
           }
-        });
 
-        setLoading(false);
-        return () => unsubscribeDoc();
+          unsubscribeDoc = onSnapshot(
+            familyStateRef,
+            (docSnapshot) => {
+              if (docSnapshot.exists()) {
+                setFamilyState({ ...defaultFamilyState, ...docSnapshot.data() });
+              }
+              setLoading(false);
+            },
+            (error) => {
+              console.error("Family state subscription failed:", error);
+              setFamilyState(defaultFamilyState);
+              setLoading(false);
+            }
+          );
+        } catch (error) {
+          console.error("Failed to load family state:", error);
+          setFamilyState(defaultFamilyState);
+          setLoading(false);
+        }
       } else {
         setFamilyState(defaultFamilyState);
         setLoading(false);
       }
     });
-    return () => unsubscribeAuth();
+
+    return () => {
+      if (unsubscribeDoc) {
+        unsubscribeDoc();
+      }
+      unsubscribeAuth();
+    };
   }, []);
 
   const value = { ...familyState, currentUser, loading };
