@@ -17,6 +17,8 @@
   --radius-lg: 30px;
   --radius-md: 22px;
   --radius-sm: 16px;
+  --bottom-nav-height: 82px;
+  --bottom-nav-gap: 34px;
 }
 
 * {
@@ -644,8 +646,9 @@ button {
 .home-content {
   height: 100%;
   max-height: 92vh;
-  padding: 58px 22px 116px;
+  padding: 58px 22px calc(var(--bottom-nav-height) + var(--bottom-nav-gap) + env(safe-area-inset-bottom, 0px));
   overflow-y: auto;
+  scroll-padding-bottom: calc(var(--bottom-nav-height) + var(--bottom-nav-gap) + env(safe-area-inset-bottom, 0px));
 }
 
 .home-header {
@@ -988,11 +991,12 @@ button {
   right: 0;
   bottom: 0;
   left: 0;
+  z-index: 4;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 2px;
-  min-height: 82px;
-  padding: 10px 14px 14px;
+  min-height: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom, 0px));
+  padding: 10px 14px calc(14px + env(safe-area-inset-bottom, 0px));
   border-top: 1px solid rgba(138, 150, 163, 0.14);
   background: rgba(255, 255, 255, 0.95);
   backdrop-filter: blur(18px);

@@ -1,5 +1,7 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import elderRoomMonitorVideo from '../../assets/videos/elder-room-monitor.mp4';
+import fallMonitorVideo from '../../assets/videos/fall-monitor.mp4';
 
 export default function LiveMonitor() {
   const navigate = useNavigate();
@@ -7,19 +9,26 @@ export default function LiveMonitor() {
   const videoRef = useRef(null);
 
   const simulations = {
-    normal: { title: "Person Detected", status: "Normal", confidence: "98%", message: "All systems normal", indicator: "All clear", src: "/assets/videos/elder-room-monitor.mp4" },
-    fall: { title: "Fall Detected", status: "Emergency", confidence: "94%", message: "Possible fall detected. Immediate attention required.", indicator: "Emergency", src: "/assets/videos/fall-monitor.mp4" },
-    'no-movement': { title: "No Movement Detected", status: "Warning", confidence: "91%", message: "No movement has been detected for an extended period.", indicator: "Warning", src: "/assets/videos/elder-room-monitor.mp4" }
+    normal: { title: "Person Detected", status: "Normal", confidence: "98%", message: "All systems normal", indicator: "All clear", src: elderRoomMonitorVideo },
+    fall: { title: "Fall Detected", status: "Emergency", confidence: "94%", message: "Possible fall detected. Immediate attention required.", indicator: "Emergency", src: fallMonitorVideo },
+    'no-movement': { title: "No Movement Detected", status: "Warning", confidence: "91%", message: "No movement has been detected for an extended period.", indicator: "Warning", src: elderRoomMonitorVideo }
   };
 
   const currentSim = simulations[activeSimulation];
 
+  useEffect(() => {
+    const video = videoRef.current;
+
+    if (!video) {
+      return;
+    }
+
+    video.load();
+    video.play().catch(() => {});
+  }, [currentSim.src]);
+
   const handleSimulate = (type) => {
     setActiveSimulation(type);
-    if (videoRef.current) {
-      videoRef.current.src = simulations[type].src;
-      videoRef.current.play().catch(e => console.log("Autoplay prevented"));
-    }
   };
 
   return (
