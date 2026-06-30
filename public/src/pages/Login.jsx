@@ -3,7 +3,7 @@ import { useNavigate, Navigate } from 'react-router-dom';
 import { toastEvent } from '../components/Toast';
 import { useFamilyData } from '../context/FamilyContext';
 
-import { signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { signInWithEmailAndPassword, createUserWithEmailAndPassword, RecaptchaVerifier, sendPasswordResetEmail, signInWithPhoneNumber, updateProfile } from 'firebase/auth';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { auth, db } from '../services/firebase';
 
@@ -17,6 +17,10 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [isPhoneLoginOpen, setIsPhoneLoginOpen] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [phoneCode, setPhoneCode] = useState('');
+  const [confirmationResult, setConfirmationResult] = useState(null);
 
   if (currentUser) {
     return <Navigate to="/home" replace />;
@@ -29,6 +33,9 @@ export default function Login() {
     if (code === "auth/weak-password") return "Password should be at least 6 characters.";
     if (code === "auth/invalid-credential" || code === "auth/wrong-password") return "Email or password is incorrect.";
     if (code === "auth/network-request-failed") return "Network error. Please check your connection.";
+    if (code === "auth/invalid-phone-number") return "Enter a phone number with country code.";
+    if (code === "auth/invalid-verification-code") return "The verification code is incorrect.";
+    if (code === "auth/operation-not-allowed") return "This sign-in method is not enabled in Firebase.";
     return "Something went wrong. Please try again.";
   };
 
@@ -82,6 +89,71 @@ export default function Login() {
       });
 
       toastEvent.show("Account created successfully!");
+      navigate('/home');
+    } catch (error) {
+      toastEvent.show(getFriendlyError(error));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePasswordReset = async () => {
+    if (!email) {
+      toastEvent.show("Enter your email first, then request a reset link.");
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toastEvent.show("Password reset email sent.");
+    } catch (error) {
+      toastEvent.show(getFriendlyError(error));
+    }
+  };
+
+  const getRecaptchaVerifier = () => {
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, 'phone-recaptcha', {
+        size: 'invisible'
+      });
+    }
+
+    return window.recaptchaVerifier;
+  };
+
+  const handleSendPhoneCode = async () => {
+    if (!phoneNumber.trim()) {
+      toastEvent.show("Enter a phone number with country code.");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const verifier = getRecaptchaVerifier();
+      const result = await signInWithPhoneNumber(auth, phoneNumber.trim(), verifier);
+      setConfirmationResult(result);
+      toastEvent.show("Verification code sent.");
+    } catch (error) {
+      toastEvent.show(getFriendlyError(error));
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.clear();
+        window.recaptchaVerifier = null;
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleVerifyPhoneCode = async () => {
+    if (!confirmationResult || !phoneCode.trim()) {
+      toastEvent.show("Enter the verification code.");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      await confirmationResult.confirm(phoneCode.trim());
+      toastEvent.show("Phone sign-in successful.");
       navigate('/home');
     } catch (error) {
       toastEvent.show(getFriendlyError(error));
@@ -147,7 +219,7 @@ export default function Login() {
           
           <div className="login-links">
             <p>New here? <a href="#" onClick={(e) => { e.preventDefault(); setIsSignUp(true); }}>Sign Up</a></p>
-            <button className="secondary-text-button" type="button" onClick={() => toastEvent.show("Forgot password logic to be implemented.")}>Forgot password?</button>
+            <button className="secondary-text-button" type="button" onClick={handlePasswordReset}>Forgot password?</button>
           </div>
         </form>
       ) : (
@@ -197,9 +269,43 @@ export default function Login() {
         <span></span><strong>OR</strong><span></span>
       </div>
 
-      <button className="phone-login-button" type="button" onClick={() => toastEvent.show("Phone number login is for UI demo only.")}>
-        Login with Phone Number
-      </button>
+      {!isPhoneLoginOpen ? (
+        <button className="phone-login-button" type="button" onClick={() => setIsPhoneLoginOpen(true)}>
+          Login with Phone Number
+        </button>
+      ) : (
+        <div className="phone-auth-panel">
+          <label className="input-pill" htmlFor="phoneNumber">
+            <span className="input-icon">☎</span>
+            <input
+              id="phoneNumber"
+              type="tel"
+              placeholder="+1 555 010 1234"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+            />
+          </label>
+          {confirmationResult && (
+            <label className="input-pill" htmlFor="phoneCode">
+              <span className="input-icon">#</span>
+              <input
+                id="phoneCode"
+                inputMode="numeric"
+                placeholder="Verification code"
+                value={phoneCode}
+                onChange={(e) => setPhoneCode(e.target.value)}
+              />
+            </label>
+          )}
+          <div id="phone-recaptcha"></div>
+          <div className="phone-auth-actions">
+            <button type="button" onClick={() => setIsPhoneLoginOpen(false)}>Cancel</button>
+            <button type="button" onClick={confirmationResult ? handleVerifyPhoneCode : handleSendPhoneCode} disabled={isLoading}>
+              {confirmationResult ? "Verify" : "Send code"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

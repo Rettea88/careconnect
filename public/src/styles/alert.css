@@ -84,6 +84,35 @@
     gap: 16px;
 }
 
+.dispatch-countdown {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 24px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.18);
+    padding: 12px;
+}
+
+.dispatch-countdown span {
+    display: grid;
+    place-items: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: white;
+    color: #F04242;
+    font-size: 18px;
+    font-weight: 900;
+}
+
+.dispatch-countdown p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 14px;
+    font-weight: 800;
+}
+
 .alert-icon-wrapper {
     width: 60px;
     height: 60px;

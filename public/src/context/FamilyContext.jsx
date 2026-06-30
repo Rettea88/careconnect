@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { auth, db } from '../services/firebase';
 import { onAuthStateChanged } from 'firebase/auth';
-import { doc, onSnapshot, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, onSnapshot, getDoc, setDoc, updateDoc, serverTimestamp } from 'firebase/firestore';
 
 const FamilyContext = createContext();
 
@@ -17,6 +17,23 @@ export function FamilyProvider({ children }) {
   const [familyState, setFamilyState] = useState(defaultFamilyState);
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const updateFamilyState = useCallback(async (updates) => {
+    setFamilyState((current) => ({ ...current, ...updates }));
+
+    if (!currentUser) {
+      return;
+    }
+
+    try {
+      await updateDoc(doc(db, "familyStates", currentUser.uid), {
+        ...updates,
+        updatedAt: serverTimestamp()
+      });
+    } catch (error) {
+      console.error("Failed to update family state:", error);
+    }
+  }, [currentUser]);
 
   useEffect(() => {
     let unsubscribeDoc = null;
@@ -75,7 +92,7 @@ export function FamilyProvider({ children }) {
     };
   }, []);
 
-  const value = { ...familyState, currentUser, loading };
+  const value = { ...familyState, currentUser, loading, updateFamilyState };
 
   return (
     <FamilyContext.Provider value={value}>

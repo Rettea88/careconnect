@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useFamilyData } from '../context/FamilyContext';
-import { toastEvent } from '../components/Toast';
 
 export default function Home() {
+  const [isHealthOpen, setIsHealthOpen] = useState(false);
   const familyState = useFamilyData() || {};
+  const { updateFamilyState } = familyState;
   const user = familyState.user || { userName: 'Sarah Chen', userInitials: 'SC' };
   const safety = familyState.safety || { safetyStatus: 'Safe', safetyMessage: 'All systems normal', battery: 98, cameraStatus: 'Camera Online' };
   const activity = familyState.activity || { walkingStatus: 'Walking', walkingDetail: '2 min ago · steady pace' };
@@ -15,6 +16,14 @@ export default function Home() {
     if (safety.safetyStatus === 'Emergency') return 'status-emergency';
     if (safety.safetyStatus === 'Warning') return 'status-warning';
     return 'status-safe';
+  };
+
+  const clearSafetyStatus = () => {
+    updateFamilyState?.({
+      safety: { safetyStatus: "Safe", safetyMessage: "All systems normal", cameraStatus: "Camera Online", battery: 98 },
+      activity: { walkingStatus: "Walking", walkingDetail: "Live monitor active" },
+      alerts: { unreadAlerts: 0 }
+    });
   };
 
   return (
@@ -46,6 +55,11 @@ export default function Home() {
           <span>{safety.cameraStatus}</span>
           <span><strong>{safety.battery}</strong>% battery</span>
         </div>
+        {safety.safetyStatus !== 'Safe' && (
+          <button className="clear-status-button" type="button" onClick={clearSafetyStatus}>
+            Mark resolved
+          </button>
+        )}
       </section>
 
       <section className="walking-card">
@@ -71,7 +85,7 @@ export default function Home() {
             <strong>Alerts</strong><small>Review updates</small>
             {alerts.unreadAlerts > 0 && <em className="card-badge">{alerts.unreadAlerts}</em>}
           </Link>
-          <button className="action-card" onClick={() => toastEvent.show("Health summary is a placeholder.")}>
+          <button className="action-card" onClick={() => setIsHealthOpen(true)}>
             <span className="action-icon sage">♥</span>
             <strong>Health</strong><small>Vitals summary</small>
           </button>
@@ -81,6 +95,31 @@ export default function Home() {
           </Link>
         </div>
       </section>
+
+      {isHealthOpen && (
+        <div className="sheet-backdrop" role="dialog" aria-modal="true" aria-labelledby="health-title">
+          <div className="bottom-sheet">
+            <div className="sheet-handle" aria-hidden="true"></div>
+            <div className="sheet-header">
+              <div>
+                <span className="eyebrow">Today</span>
+                <h2 id="health-title">Health Summary</h2>
+              </div>
+              <button className="sheet-close" type="button" onClick={() => setIsHealthOpen(false)} aria-label="Close">×</button>
+            </div>
+            <div className="vitals-grid">
+              <div className="vital-card"><span>Heart Rate</span><strong>78</strong><small>bpm</small></div>
+              <div className="vital-card"><span>Oxygen</span><strong>97</strong><small>% SpO2</small></div>
+              <div className="vital-card"><span>Steps</span><strong>2.4k</strong><small>today</small></div>
+              <div className="vital-card"><span>Sleep</span><strong>7.1</strong><small>hours</small></div>
+            </div>
+            <div className="insight-card">
+              <strong>Care insight</strong>
+              <p>Vitals are steady. Walking activity is lighter than usual, so check hydration and afternoon movement.</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

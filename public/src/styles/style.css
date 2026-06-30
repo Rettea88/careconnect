@@ -66,6 +66,12 @@ button {
   padding: 0 28px 32px;
 }
 
+.login-shell {
+  background:
+    radial-gradient(circle at 50% 88%, rgba(45, 183, 163, 0.08), transparent 30%),
+    radial-gradient(circle at 50% 36%, rgba(255, 95, 109, 0.1), transparent 28%);
+}
+
 .demo-hero {
   text-align: center;
 }
@@ -290,7 +296,8 @@ button {
 }
 
 .login-phone .login-content {
-  padding: 116px 30px 34px;
+  height: 100%;
+  padding: 108px 30px 34px;
   overflow-y: auto;
 }
 
@@ -590,6 +597,35 @@ button {
   transform: translateY(1px) scale(0.99);
 }
 
+.phone-auth-panel {
+  display: grid;
+  gap: 12px;
+}
+
+.phone-auth-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.phone-auth-actions button {
+  min-height: 44px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.phone-auth-actions button:first-child {
+  background: #ffffff;
+  color: var(--muted);
+  border: 1px solid rgba(24, 37, 54, 0.12);
+}
+
+.phone-auth-actions button:last-child {
+  background: var(--navy);
+  color: #ffffff;
+}
+
 .hidden {
   display: none !important;
 }
@@ -846,6 +882,18 @@ button {
   white-space: nowrap;
 }
 
+.clear-status-button {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 14px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 900;
+}
+
 .walking-card {
   display: grid;
   grid-template-columns: 52px 1fr 34px;
@@ -1045,6 +1093,106 @@ button {
 .toast.show {
   opacity: 1;
   transform: translateY(0);
+}
+
+.sheet-backdrop,
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(24, 37, 54, 0.32);
+  backdrop-filter: blur(8px);
+}
+
+.bottom-sheet {
+  width: 100%;
+  border-radius: 28px;
+  background: #ffffff;
+  padding: 10px 18px 18px;
+  box-shadow: 0 22px 46px rgba(24, 37, 54, 0.22);
+}
+
+.sheet-handle {
+  width: 44px;
+  height: 5px;
+  border-radius: 999px;
+  background: #d8dee5;
+  margin: 0 auto 14px;
+}
+
+.sheet-header,
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.sheet-header h2,
+.modal-header h2 {
+  margin: 3px 0 0;
+  font-size: 20px;
+}
+
+.sheet-close,
+.modal-header button {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #f0f3f6;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.vitals-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.vital-card {
+  min-height: 92px;
+  border-radius: 18px;
+  background: #f7fafb;
+  padding: 14px;
+}
+
+.vital-card span,
+.vital-card small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.vital-card strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--navy);
+  font-size: 28px;
+  line-height: 1;
+}
+
+.insight-card {
+  margin-top: 12px;
+  border-radius: 18px;
+  background: rgba(45, 183, 163, 0.12);
+  color: var(--sage-dark);
+  padding: 14px;
+}
+
+.insight-card p {
+  margin: 6px 0 0;
+  color: #42635e;
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .login-phone .toast {

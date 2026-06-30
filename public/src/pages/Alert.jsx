@@ -1,9 +1,22 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/alert.css';
 
 export default function Alert() {
   const navigate = useNavigate();
+  const [dispatchCountdown, setDispatchCountdown] = useState(30);
+
+  useEffect(() => {
+    if (dispatchCountdown <= 0) {
+      return;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setDispatchCountdown((current) => current - 1);
+    }, 1000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [dispatchCountdown]);
 
   return (
     <div className="alert-wrapper">
@@ -25,6 +38,10 @@ export default function Alert() {
               <h1>Fall Detected</h1>
               <p>Mom may need help</p>
             </div>
+          </div>
+          <div className="dispatch-countdown">
+            <span>{dispatchCountdown > 0 ? `${dispatchCountdown}s` : 'Now'}</span>
+            <p>{dispatchCountdown > 0 ? 'Auto-notifying community response' : 'Community response active'}</p>
           </div>
         </div>
 

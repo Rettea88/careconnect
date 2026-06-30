@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { FamilyProvider, useFamilyData } from './context/FamilyContext';
 
 import PhoneLayout from './components/PhoneLayout';
+import LoginLayout from './components/LoginLayout';
 
 import Login from './pages/Login';
 import Home from './pages/Home';
@@ -28,7 +29,7 @@ export default function App() {
     <FamilyProvider>
       <Router>
         <Routes>
-          <Route path="/login" element={<Login />} />
+          <Route path="/login" element={<LoginLayout><Login /></LoginLayout>} />
 
           <Route element={<ProtectedRoute><PhoneLayout /></ProtectedRoute>}>
             <Route path="/home" element={<Home />} />

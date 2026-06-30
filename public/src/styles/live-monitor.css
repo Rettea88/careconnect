@@ -132,6 +132,75 @@ button {
   box-shadow: 0 14px 32px rgb(88 57 48 / 15%);
 }
 
+.fall-alert-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  background: rgba(30, 18, 20, 0.42);
+  backdrop-filter: blur(8px);
+}
+
+.fall-alert-card {
+  width: 100%;
+  border-radius: 28px;
+  background: #ffffff;
+  padding: 18px;
+  box-shadow: 0 24px 54px rgb(60 20 20 / 24%);
+}
+
+.fall-alert-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 14px;
+  border-radius: 50%;
+  background: #e75d62;
+  color: #ffffff;
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.fall-alert-card h2 {
+  margin: 3px 0 6px;
+  color: #4f171d;
+  font-size: 24px;
+}
+
+.fall-alert-card p {
+  margin: 0;
+  color: #766467;
+  font-weight: 700;
+}
+
+.fall-alert-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.fall-alert-actions button {
+  min-height: 44px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 900;
+}
+
+.fall-alert-actions button:first-child {
+  background: #e75d62;
+  color: #ffffff;
+}
+
+.fall-alert-actions button:last-child {
+  background: #f2edf0;
+  color: #5c4c50;
+}
+
 .monitor-video {
   position: absolute;
   inset: 0;
@@ -284,20 +353,20 @@ button {
 
 .ai-box {
   position: absolute;
-  top: 20%;
-  left: 50%;
-  width: 29%;
-  height: 52%;
-  border: 2px solid var(--state-color);
+  top: var(--box-top, 20%);
+  left: var(--box-left, 50%);
+  width: var(--box-width, 29%);
+  height: var(--box-height, 52%);
+  border: 3px solid var(--state-color);
   border-radius: 5px;
-  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 8%);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--state-color) 42%, transparent), inset 0 0 0 1px rgb(0 0 0 / 8%);
   pointer-events: none;
-  opacity: 1;
+  opacity: var(--box-opacity, 1);
   transition:
-    top 180ms linear,
-    left 180ms linear,
-    width 180ms linear,
-    height 180ms linear,
+    top 90ms linear,
+    left 90ms linear,
+    width 90ms linear,
+    height 90ms linear,
     opacity 220ms ease,
     border-color 300ms ease,
     box-shadow 300ms ease;
@@ -430,6 +499,21 @@ h2 {
   border-radius: 17px;
   background: #ffffff;
   box-shadow: 0 7px 20px rgb(91 55 45 / 6%);
+}
+
+.detection-chip.is-detected {
+  border-color: color-mix(in srgb, var(--state-color) 45%, #ffffff);
+  background: var(--state-soft);
+  box-shadow: 0 9px 24px color-mix(in srgb, var(--state-color) 14%, transparent);
+}
+
+.detection-chip.is-detected .chip-icon {
+  background: var(--state-color);
+  color: #ffffff;
+}
+
+.detection-chip.is-detected small {
+  color: var(--state-text);
 }
 
 .chip-icon {
@@ -701,4 +785,29 @@ h2 {
     animation: none;
     transition: none;
   }
+}
+
+.gesture-icon::before {
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  content: "";
+}
+
+.gesture-icon::after {
+  position: absolute;
+  width: 15px;
+  height: 2px;
+  background: currentColor;
+  content: "";
+  transform: rotate(-35deg);
+}
+
+.hand-icon::before {
+  width: 13px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-radius: 8px 8px 5px 5px;
+  content: "";
 }
